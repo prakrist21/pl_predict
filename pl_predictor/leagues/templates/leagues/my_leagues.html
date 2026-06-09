@@ -1,0 +1,8 @@
+<h2>My Leagues</h2>
+{% for league in leagues %}
+    <p>{{ league.name }} — Code: {{ league.invite_code }}</p>
+{% empty %}
+    <p>You are not in any leagues yet.</p>
+{% endfor %}
+<a href="{% url 'create_league' %}">Create League</a> |
+<a href="{% url 'join_league' %}">Join League</a>
