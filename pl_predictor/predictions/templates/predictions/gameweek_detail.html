@@ -1,0 +1,7 @@
+<h2>Gameweek {{ gameweek.number }}</h2>
+{% for match in matches %}
+    <p>
+        {{ match.home_team }} vs {{ match.away_team }} — {{ match.kickoff_time }}
+        <a href="{% url 'submit_prediction' match.match_id %}">Predict</a>
+    </p>
+{% endfor %}

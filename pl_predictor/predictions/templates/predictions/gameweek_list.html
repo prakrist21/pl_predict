@@ -1,0 +1,4 @@
+<h2>Gameweeks</h2>
+{% for gw in gameweek %}
+    <a href="{% url 'gameweek_detail' gw.number %}">Gameweek {{ gw.number }}</a><br>
+{% endfor %}
