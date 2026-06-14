@@ -1,4 +1,26 @@
-<h2>Gameweeks</h2>
-{% for gw in gameweek %}
-    <a href="{% url 'gameweek_detail' gw.number %}">Gameweek {{ gw.number }}</a><br>
-{% endfor %}
+{% extends 'base.html' %}
+
+{% block title %}{% if league %}{{ league.name }} — {% endif %}Gameweeks — PL Predictor{% endblock %}
+
+{% block content %}
+{% if league %}
+<div class="flex items-center justify-between mb-8">
+    <h2 class="text-2xl font-bold text-emerald-400">{{ league.name }}</h2>
+    <a href="{% url 'my_leagues' %}" class="bg-slate-700 hover:bg-slate-600 text-gray-200 text-sm font-medium py-2 px-4 rounded-lg transition">&larr; My Leagues</a>
+</div>
+{% else %}
+<h2 class="text-2xl font-bold text-emerald-400 mb-8">Gameweeks</h2>
+{% endif %}
+
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    {% for gw in gameweek %}
+    <a href="{% if league %}{% url 'league_gameweek_detail' league.id gw.number %}{% else %}{% url 'gameweek_detail' gw.number %}{% endif %}" class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 hover:border-emerald-500 hover:bg-slate-700 p-6 text-center transition group">
+        <span class="text-lg font-bold text-white group-hover:text-emerald-400 transition">GW {{ gw.number }}</span>
+    </a>
+    {% empty %}
+    <div class="col-span-full bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-12 text-center">
+        <p class="text-gray-400">No gameweeks available yet.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

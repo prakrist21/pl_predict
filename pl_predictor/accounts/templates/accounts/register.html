@@ -1,7 +1,20 @@
-<h2>Register</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
-<a href="{% url 'login' %}">Already have an account? Login</a>
+{% extends 'base.html' %}
+
+{% block title %}Register — PL Predictor{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-10">
+    <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-8">
+        <h2 class="text-2xl font-bold text-emerald-400 mb-6 text-center">Register</h2>
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg transition">Register</button>
+        </form>
+        <p class="mt-4 text-center text-sm text-gray-400">
+            Already have an account?
+            <a href="{% url 'login' %}" class="text-emerald-400 hover:text-emerald-300 font-medium">Login</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

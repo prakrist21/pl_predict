@@ -12,7 +12,7 @@ def calculate_points(sender, instance, **kwargs):
 
     for prediction in predictions:
         pred_home=prediction.pred_home
-        pred_away=predictions.pred_away
+        pred_away=prediction.pred_away
         actual_home=match.home_score
         actual_away=match.away_score 
 

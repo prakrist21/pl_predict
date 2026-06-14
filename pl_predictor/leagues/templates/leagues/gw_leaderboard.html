@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ league.name }} — GW {{ gameweek.number }} — PL Predictor{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-8">
+    <div>
+        <h2 class="text-2xl font-bold text-emerald-400">{{ league.name }}</h2>
+        <p class="text-gray-400 text-sm mt-1">Gameweek {{ gameweek.number }} Leaderboard</p>
+    </div>
+    <a href="{% url 'league_gameweek_detail' league.id gameweek.number %}" class="bg-slate-700 hover:bg-slate-600 text-gray-200 text-sm font-medium py-2 px-4 rounded-lg transition">&larr; GW {{ gameweek.number }}</a>
+</div>
+
+<div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
+    <table class="w-full">
+        <thead>
+            <tr class="bg-slate-700 text-gray-300 text-sm uppercase tracking-wider">
+                <th class="px-6 py-3 text-left w-16">#</th>
+                <th class="px-6 py-3 text-left">Player</th>
+                <th class="px-6 py-3 text-right">Points</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-700">
+            {% for row in leaderboard %}
+            <tr class="hover:bg-slate-700/50 transition">
+                <td class="px-6 py-4 text-gray-400 font-medium">{{ forloop.counter }}</td>
+                <td class="px-6 py-4 text-white font-medium">{{ row.user__username }}</td>
+                <td class="px-6 py-4 text-right text-emerald-400 font-bold">{{ row.total_points }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="px-6 py-12 text-center text-gray-400">No predictions yet for this gameweek.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-6">
+    <a href="{% url 'season_leaderboard' league.id %}" class="text-emerald-400 hover:text-emerald-300 font-medium transition">View Season Leaderboard &rarr;</a>
+</div>
+{% endblock %}
