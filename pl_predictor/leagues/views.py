@@ -3,7 +3,7 @@ from .forms import LeagueForm, JoinLeagueForm
 from .models import League, LeagueMember
 
 import uuid
-# Create your views here.
+# Create your views here. 843FF1CD
 
 def create_league_view(request):
     if request.method=="POST":
