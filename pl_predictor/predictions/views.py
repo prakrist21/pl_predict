@@ -70,3 +70,16 @@ def submit_prediction(request, match_id):
             form = PredictionForm()
 
     return render(request,"predictions/submit_prediction.html",{"form":form,"match":match})
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.management import call_command
+
+@csrf_exempt
+def trigger_fetch_results(request):
+    if request.method == 'POST':
+        secret = request.headers.get('X-Secret-Key')
+        if secret != os.getenv('CRON_SECRET'):
+            return JsonResponse({'error': 'unauthorized'}, status=401)
+        call_command('fetch_results')
+        return JsonResponse({'status': 'done'})
