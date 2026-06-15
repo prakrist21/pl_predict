@@ -82,6 +82,9 @@ def trigger_fetch_results(request):
         secret = request.headers.get('X-Secret-Key')
         if secret != os.getenv('CRON_SECRET'):
             return JsonResponse({'error': 'unauthorized'}, status=401)
-        call_command('fetch_results')
-        return JsonResponse({'status': 'done'})
+        try:
+            call_command('fetch_results')
+            return JsonResponse({'status': 'done'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'method not allowed'}, status=405)
