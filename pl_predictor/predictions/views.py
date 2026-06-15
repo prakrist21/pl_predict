@@ -74,6 +74,7 @@ def submit_prediction(request, match_id):
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.management import call_command
+import os
 
 @csrf_exempt
 def trigger_fetch_results(request):
