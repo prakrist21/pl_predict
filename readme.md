@@ -29,7 +29,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Visit **http://127.0.0.1:8000/** to use the app.
+Visit **https://pl-predict-qtbs.onrender.com/** to use the app.
 
 ## Environment Variables
 
