@@ -44,7 +44,7 @@ def join_league_view(request):
 
 
 def my_leagues_view(request):
-    leagues=League.objects.filter(members__user=request.user)
+    leagues=League.objects.filter(members__user=request.user).prefetch_related('members__user')
     return render(request,'leagues/my_leagues.html',{"leagues":leagues})
 
 def gw_leaderboard(request,league_id,gw_number):
@@ -102,8 +102,52 @@ def league_gameweek_detail(request, league_id, gw_number):
         return redirect('my_leagues')
     gameweek = Gameweek.objects.get(number=gw_number)
     matches = Match.objects.filter(gameweek=gameweek)
+
+    members = LeagueMember.objects.filter(league=league)
+    user_ids = members.values_list('user', flat=True)
+
+    predictions = Prediction.objects.filter(
+        user__in=user_ids,
+        match__in=matches
+    ).values('match_id', 'user__username', 'pred_home', 'pred_away')
+
+    league_predictions = {}
+    for p in predictions:
+        match_id = p['match_id']
+        if match_id not in league_predictions:
+            league_predictions[match_id] = []
+        league_predictions[match_id].append(p)
+
+    match_data = []
+    for match in matches:
+        match_data.append({
+            'match': match,
+            'predictions': league_predictions.get(match.match_id, [])
+        })
+
     return render(request, "predictions/gameweek_detail.html", {
-        "matches": matches, "gameweek": gameweek, "league": league
+        "match_data": match_data, "gameweek": gameweek, "league": league
+    })
+
+
+def league_match_detail(request, league_id, match_id):
+    league = League.objects.get(id=league_id)
+    if not LeagueMember.objects.filter(league=league, user=request.user).exists():
+        return redirect('my_leagues')
+    match = Match.objects.get(match_id=match_id)
+
+    members = LeagueMember.objects.filter(league=league)
+    user_ids = members.values_list('user', flat=True)
+
+    predictions = Prediction.objects.filter(
+        user__in=user_ids,
+        match=match
+    ).select_related('user').order_by('user__username')
+
+    return render(request, 'leagues/league_match_detail.html', {
+        'match': match,
+        'league': league,
+        'predictions': predictions,
     })
 
 

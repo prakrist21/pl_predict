@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ match.home_team }} vs {{ match.away_team }} — {{ league.name }}{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-8">
+    <div>
+        <h2 class="text-2xl font-bold text-emerald-400">{{ match.home_team }}</h2>
+        <p class="text-gray-400 text-sm font-medium">vs</p>
+        <h2 class="text-2xl font-bold text-emerald-400">{{ match.away_team }}</h2>
+        <p class="text-sm text-gray-500 mt-1">{{ match.kickoff_time|date:"D, j M Y, H:i" }}</p>
+    </div>
+    <div class="flex flex-col items-end gap-2">
+        {% if match.status == "FINISHED" and match.home_score is not None %}
+        <div class="text-2xl font-bold text-white">
+            {{ match.home_score }} - {{ match.away_score }}
+        </div>
+        <span class="text-xs text-emerald-400 font-medium uppercase">Full Time</span>
+        {% else %}
+        <span class="text-xs text-yellow-400 font-medium uppercase">{{ match.status }}</span>
+        {% endif %}
+        <a href="{% url 'league_gameweek_detail' league.id match.gameweek.number %}" class="bg-slate-700 hover:bg-slate-600 text-gray-200 text-sm font-medium py-2 px-4 rounded-lg transition">&larr; GW {{ match.gameweek.number }}</a>
+    </div>
+</div>
+
+<div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
+    <table class="w-full">
+        <thead>
+            <tr class="bg-slate-700 text-gray-300 text-sm uppercase tracking-wider">
+                <th class="px-6 py-3 text-left">Player</th>
+                <th class="px-6 py-3 text-center">Pred Home</th>
+                <th class="px-6 py-3 text-center">Pred Away</th>
+                <th class="px-6 py-3 text-center">Actual Home</th>
+                <th class="px-6 py-3 text-center">Actual Away</th>
+                <th class="px-6 py-3 text-right">Points</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-700">
+            {% for pred in predictions %}
+            <tr class="hover:bg-slate-700/50 transition">
+                <td class="px-6 py-4 text-white font-medium">{{ pred.user.username }}</td>
+                <td class="px-6 py-4 text-center text-gray-300">{{ pred.pred_home }}</td>
+                <td class="px-6 py-4 text-center text-gray-300">{{ pred.pred_away }}</td>
+                <td class="px-6 py-4 text-center {% if match.home_score is not None %}text-white font-medium{% else %}text-gray-500{% endif %}">{% if match.home_score is not None %}{{ match.home_score }}{% else %}-{% endif %}</td>
+                <td class="px-6 py-4 text-center {% if match.away_score is not None %}text-white font-medium{% else %}text-gray-500{% endif %}">{% if match.away_score is not None %}{{ match.away_score }}{% else %}-{% endif %}</td>
+                <td class="px-6 py-4 text-right {% if pred.points > 0 %}text-emerald-400 font-bold{% else %}text-gray-400{% endif %}">{{ pred.points }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="px-6 py-12 text-center text-gray-400">No predictions yet for this match.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-6 flex justify-between items-center">
+    <a href="{% url 'league_gameweek_detail' league.id match.gameweek.number %}" class="text-gray-400 hover:text-emerald-400 text-sm transition">&larr; Back to GW {{ match.gameweek.number }}</a>
+    <a href="{% url 'league_submit_prediction' league.id match.match_id %}" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold py-2 px-6 rounded-lg transition">Predict</a>
+</div>
+{% endblock %}

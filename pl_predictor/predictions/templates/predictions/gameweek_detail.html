@@ -15,18 +15,51 @@
 {% endif %}
 
 <div class="space-y-4">
-    {% for match in matches %}
-    <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div class="flex-1">
-            <div class="flex items-center gap-3 text-lg">
-                <span class="font-bold text-white">{{ match.home_team }}</span>
-                <span class="text-gray-500 text-sm font-medium">vs</span>
-                <span class="font-bold text-white">{{ match.away_team }}</span>
+    {% for item in match_data %}
+    {% with match=item.match %}
+    <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-5 flex flex-col gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex-1">
+                <div class="flex items-center gap-3 text-lg">
+                    {% if league %}
+                    <a href="{% url 'league_match_detail' league.id match.match_id %}" class="font-bold text-white hover:text-emerald-400 transition">{{ match.home_team }}</a>
+                    {% else %}
+                    <span class="font-bold text-white">{{ match.home_team }}</span>
+                    {% endif %}
+                    <span class="text-gray-500 text-sm font-medium">vs</span>
+                    {% if league %}
+                    <a href="{% url 'league_match_detail' league.id match.match_id %}" class="font-bold text-white hover:text-emerald-400 transition">{{ match.away_team }}</a>
+                    {% else %}
+                    <span class="font-bold text-white">{{ match.away_team }}</span>
+                    {% endif %}
+                </div>
+                <p class="text-sm text-gray-400 mt-1">{{ match.kickoff_time|date:"D, j M Y, H:i" }}</p>
             </div>
-            <p class="text-sm text-gray-400 mt-1">{{ match.kickoff_time|date:"D, j M Y, H:i" }}</p>
+            <a href="{% if league %}{% url 'league_submit_prediction' league.id match.match_id %}{% else %}{% url 'submit_prediction' match.match_id %}{% endif %}" class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold py-2 px-6 rounded-lg transition text-center">Predict</a>
         </div>
-        <a href="{% if league %}{% url 'league_submit_prediction' league.id match.match_id %}{% else %}{% url 'submit_prediction' match.match_id %}{% endif %}" class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold py-2 px-6 rounded-lg transition text-center">Predict</a>
+        {% if league %}
+        <div class="border-t border-slate-700 pt-3">
+            <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Group Predictions</p>
+            {% if item.predictions %}
+            <div class="flex flex-wrap gap-2">
+                {% for pred in item.predictions %}
+                <span class="bg-slate-700/50 text-gray-300 text-sm px-3 py-1 rounded-full">{{ pred.user__username }}: {{ pred.pred_home }}-{{ pred.pred_away }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-sm text-gray-500">No predictions yet from group members.</p>
+            {% endif %}
+        </div>
+        {% else %}
+        {% if item.user_prediction %}
+        <div class="border-t border-slate-700 pt-3">
+            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Your prediction</p>
+            <span class="text-emerald-400 text-sm font-medium">{{ item.user_prediction.pred_home }} - {{ item.user_prediction.pred_away }}</span>
+        </div>
+        {% endif %}
+        {% endif %}
     </div>
+    {% endwith %}
     {% empty %}
     <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-12 text-center">
         <p class="text-gray-400">No matches scheduled for this gameweek.</p>

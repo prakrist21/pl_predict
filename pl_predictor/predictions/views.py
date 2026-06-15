@@ -12,7 +12,23 @@ def gameweek_list(request):
 def gameweek_detail(request,gw_number):
     gameweek=Gameweek.objects.get(number=gw_number)
     matches=Match.objects.filter(gameweek=gameweek)
-    return render(request,"predictions/gameweek_detail.html",{"matches":matches,"gameweek":gameweek})
+
+    user_predictions={}
+    if request.user.is_authenticated:
+        predictions=Prediction.objects.filter(
+            user=request.user,
+            match__in=matches
+        )
+        user_predictions={p.match_id: p for p in predictions}
+
+    match_data=[]
+    for match in matches:
+        match_data.append({
+            'match':match,
+            'user_prediction':user_predictions.get(match.match_id)
+        })
+
+    return render(request,"predictions/gameweek_detail.html",{"match_data":match_data,"gameweek":gameweek})
 
 def submit_prediction(request, match_id):
     match=Match.objects.get(match_id=match_id)

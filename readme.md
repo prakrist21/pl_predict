@@ -58,3 +58,4 @@ Visit **http://127.0.0.1:8000/** to use the app.
 |---|---|
 | `testuser` | `testpass123!` |
 | `pm` | `pm101010` |
+| `rooty` | `root1234` |

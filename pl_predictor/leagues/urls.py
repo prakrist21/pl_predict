@@ -9,5 +9,6 @@ urlpatterns = [
     path('<int:league_id>/season/', views.season_leaderboard, name='season_leaderboard'),
     path('<int:league_id>/gameweeks/', views.league_gameweeks, name='league_gameweeks'),
     path('<int:league_id>/gameweeks/<int:gw_number>/', views.league_gameweek_detail, name='league_gameweek_detail'),
+    path('<int:league_id>/match/<int:match_id>/', views.league_match_detail, name='league_match_detail'),
     path('<int:league_id>/match/<int:match_id>/predict/', views.league_submit_prediction, name='league_submit_prediction'),
 ]
