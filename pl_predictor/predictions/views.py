@@ -84,3 +84,4 @@ def trigger_fetch_results(request):
             return JsonResponse({'error': 'unauthorized'}, status=401)
         call_command('fetch_results')
         return JsonResponse({'status': 'done'})
+    return JsonResponse({'error': 'method not allowed'}, status=405)
