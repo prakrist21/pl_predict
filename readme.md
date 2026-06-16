@@ -154,8 +154,5 @@ The app is configured for deployment on Render:
 
 Visit **https://pl-predict-qtbs.onrender.com/** to use the live app.
 
-## .gitignore
-
-Currently ignores `.env` only. Consider adding `staticfiles/`, `__pycache__/`, `*.pyc`, `.venv/`.
 
 
